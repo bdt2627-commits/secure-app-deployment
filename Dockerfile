@@ -1,16 +1,13 @@
-# Purani image ki jagah naya version use karein jo zyada secure ho
-FROM node:20-alpine AS build
+
+FROM node:20-slim AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 COPY . .
 
-# Production stage mein minimal image use karein
-FROM node:20-alpine
+
+FROM gcr.io/distroless/nodejs20-debian12
 WORKDIR /app
-# Root user avoid karna best security practice hai
-RUN adduser -D appuser
-USER appuser
 COPY --from=build /app .
 EXPOSE 3000
-CMD ["node", "index.js"]
+CMD ["index.js"]

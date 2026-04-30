@@ -1,4 +1,4 @@
-#!/bin/bash
+
 echo "Building Docker Image..."
 docker build -t devsecops-app:v1 .
 echo "Running Container..."
