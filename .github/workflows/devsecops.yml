@@ -10,26 +10,26 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    # 1. SAST (Static Application Security Testing)
+    
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      continue-on-error: true # Interviewer ko batana ki abhi hum sirf test kar rahe hain
+      continue-on-error: true
 
-    # 2. Docker Image Build
+    
     - name: Build Docker Image
       run: docker build -t devsecops-app:${{ github.sha }} .
 
-    # 3. Container Image Scanning (Trivy)
+    
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: 'devsecops-app:${{ github.sha }}'
         format: 'table'
-        exit-code: '1' # Agar critical vulnerability mili toh pipeline fail ho jayegi
+        exit-code: '1' 
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'

@@ -1,14 +1,14 @@
-# Stage 1: Build stage
-FROM node:18-slim AS build
+# Purani image ki jagah naya version use karein jo zyada secure ho
+FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 
-# Stage 2: Production stage (Minimal Image)
-FROM node:18-alpine
+# Production stage mein minimal image use karein
+FROM node:20-alpine
 WORKDIR /app
-# Root user avoid karne ke liye (Security Practice)
+# Root user avoid karna best security practice hai
 RUN adduser -D appuser
 USER appuser
 COPY --from=build /app .
