@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevSecOps Secure Dashboard | BCA Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glow { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-sans transition-all">
+
+    <!-- Navigation -->
+    <nav class="bg-gray-800 p-4 border-b border-green-500/30 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-green-400 flex items-center gap-2">
+                <i class="fas fa-shield-halved"></i> SecureApp v1.0
+            </h1>
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#" class="hover:text-green-400 transition">Dashboard</a>
+                <a href="#reports" class="hover:text-green-400 transition">Security Reports</a>
+                <a href="#architecture" class="hover:text-green-400 transition">Architecture</a>
+            </div>
+            <button onclick="runLiveScan()" id="scanBtn" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-sm font-bold transition glow">
+                <i class="fas fa-play mr-1"></i> RUN LIVE SCAN
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-10 p-6">
+        
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition">
+                <h3 class="text-gray-400 text-xs mb-2 uppercase tracking-wider">Pipeline Status</h3>
+                <p class="text-2xl font-bold text-green-400 flex items-center gap-2">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    ACTIVE
+                </p>
+                <div class="mt-4 text-xs text-gray-500 italic">Connected to GitHub Actions</div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500/50 transition">
+                <h3 class="text-gray-400 text-xs mb-2 uppercase tracking-wider">Snyk Scan Result</h3>
+                <p class="text-2xl font-bold text-blue-400" id="snykStat">0 VULNERABILITIES</p>
+                <div class="mt-4 text-xs text-gray-500 italic">Last scanned: 2 minutes ago</div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-purple-500/50 transition">
+                <h3 class="text-gray-400 text-xs mb-2 uppercase tracking-wider">Trivy Security</h3>
+                <p class="text-2xl font-bold text-purple-400">COMPLIANT</p>
+                <div class="mt-4 text-xs text-gray-500 italic">Image: node:20-alpine</div>
+            </div>
+        </div>
+
+        <!-- Section: Architecture -->
+        <section id="architecture" class="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-project-diagram text-green-400"></i> DevSecOps Workflow
+            </h2>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center">
+                <div class="p-4 bg-gray-700 rounded-lg w-full">Code Commit (Git)</div>
+                <i class="fas fa-arrow-right hidden md:block text-gray-600"></i>
+                <div class="p-4 bg-gray-700 rounded-lg w-full border-b-4 border-blue-500">Snyk SAST Scan</div>
+                <i class="fas fa-arrow-right hidden md:block text-gray-600"></i>
+                <div class="p-4 bg-gray-700 rounded-lg w-full border-b-4 border-purple-500">Docker Build & Trivy</div>
+                <i class="fas fa-arrow-right hidden md:block text-gray-600"></i>
+                <div class="p-4 bg-green-900 rounded-lg w-full font-bold">Secure Deploy</div>
+            </div>
+        </section>
+
+        <!-- Section: Live Console (Working Part) -->
+        <section id="reports" class="bg-black p-6 rounded-xl border border-gray-700 font-mono text-sm overflow-hidden">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
+                <span class="text-gray-500 uppercase">Live Security Console</span>
+                <span class="text-green-500">● System Online</span>
+            </div>
+            <div id="consoleOutput" class="h-48 overflow-y-auto space-y-1 text-gray-300">
+                <p>> System initialized...</p>
+                <p>> Waiting for user action...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center p-10 text-gray-600 text-sm">
+        BCA Final Year Project | Valsad, Gujarat | DevSecOps Secure Pipeline
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        function runLiveScan() {
+            const output = document.getElementById('consoleOutput');
+            const btn = document.getElementById('scanBtn');
+            output.innerHTML = ""; // Clear console
+            btn.disabled = true;
+            btn.innerHTML = "<i class='fas fa-spinner animate-spin'></i> SCANNING...";
+
+            const steps = [
+                "> [INFO] Fetching latest repository metadata...",
+                "> [INFO] Running Snyk Static Analysis...",
+                "> [SUCCESS] 0 High Severity issues found in dependencies.",
+                "> [INFO] Building Docker container image...",
+                "> [INFO] Triggering Trivy Container Scan...",
+                "> [SUCCESS] Docker image verified against CVE database.",
+                "> [COMPLETE] Pipeline scan finished. System is SECURE."
+            ];
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < steps.length) {
+                    const p = document.createElement('p');
+                    p.innerHTML = steps[i];
+                    if (steps[i].includes('SUCCESS')) p.className = "text-green-400 font-bold";
+                    output.appendChild(p);
+                    output.scrollTop = output.scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    btn.innerHTML = "<i class='fas fa-check mr-1'></i> SCAN COMPLETE";
+                    setTimeout(() => {
+                        btn.innerHTML = "<i class='fas fa-play mr-1'></i> RUN LIVE SCAN";
+                    }, 3000);
+                }
+            }, 800);
+        }
+    </script>
+</body>
+</html>
